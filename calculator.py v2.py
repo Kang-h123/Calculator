@@ -1,5 +1,5 @@
 from kivy.app import App
-from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition, SwapTransition
 from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
@@ -45,9 +45,11 @@ class Screen1(Screen):
         button_bracketr = Button(text=")", font_size="40sp", background_color=(1, 0.5, 1, 0.5), color=(0.5, 1, 1, 0.5), background_normal="", background_down="")
         button_bracketr.on_press = lambda: self.append_char(")")
         button_square = Button(text="^", font_size="40sp", background_color=(1, 0.5, 1, 0.5), color=(0.5, 1, 1, 0.5), background_normal="", background_down="")
-        button_square.on_press = lambda: self.append_char("^")
+        button_square.on_press = lambda: self.append_char("**")
         button_root = Button(text="\u221a", font_size="40sp", background_color=(1, 0.5, 1, 0.5), color=(0.5, 1, 1, 0.5), background_normal="", background_down="")
-        button_root.on_press = lambda: self.append_char("\u221a")
+        button_root.on_press = lambda: self.append_char("**0.5")
+        button_history = Button(text="History", font_size="40sp", background_color=(1, 0.5, 1, 0.5), color=(0.5, 1, 1, 0.5), background_normal="", background_down="")
+        button_history.on_press = self.next_screen
 
         layout = BoxLayout(orientation="vertical")
         row1 = BoxLayout(orientation="horizontal", spacing=10, padding=5)
@@ -55,7 +57,7 @@ class Screen1(Screen):
         row3 = BoxLayout(orientation="horizontal", spacing=10, padding=5)
         row4 = BoxLayout(orientation="horizontal", spacing=10, padding=5)
         row5 = BoxLayout(orientation="horizontal", spacing=10, padding=5)
-     
+        row6 = BoxLayout(orientation="horizontal", spacing=10, padding=5)
 
         row1.add_widget(button_1)
         row1.add_widget(button_2)
@@ -82,7 +84,7 @@ class Screen1(Screen):
         row5.add_widget(button_square)
         row5.add_widget(button_root)
 
-
+        row6.add_widget(button_history)
 
         layout.add_widget(self.label)
         layout.add_widget(row1)
@@ -90,8 +92,13 @@ class Screen1(Screen):
         layout.add_widget(row3)
         layout.add_widget(row4)
         layout.add_widget(row5)
+        layout.add_widget(row6)
 
         self.add_widget(layout)
+
+    def next_screen(self):
+        self.manager.transition = SlideTransition(direction="left", duration=.2)
+        self.manager.current ="screen2"
 
     def append_char(self, c):
         self.label.text += c
@@ -101,34 +108,36 @@ class Screen1(Screen):
         equal = str(eval(self.label.text))
         self.label.text = equal
         
+class Screen2(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.label = Label(text="History", font_size="40sp")
+        button_return = Button(text="Return", font_size="40sp", background_color=(1, 0.5, 1, 0.5), color=(0.5, 1, 1, 0.5), background_normal="", background_down="")
+        button_return.on_press = self.next_screen
+        
+        
+        layout = BoxLayout(orientation="vertical")
+        row0 = BoxLayout(orientation="horizontal", spacing=10, padding=5) 
+        row0.add_widget(button_return)
+        layout.add_widget(self.label)
+        layout.add_widget(row0)
 
-    '''def click_1(self):
-        self.label.text = "1"
-    def click_2(self):
-        self.label.text = "2"
-    def click_3(self):
-        self.label.text = "3"
-    def click_plus(self):
-        self.label.text = "+"
-    def click_4(self):
-        self.label.text = "4"
-    def click_5(self):
-        self.label.text = "5"
-    def click_6(self):
-        self.label.text = "6"
-    def click_minus(self):
-        self.label.text = "-"
-    def click_C(self):
-        self.label.text = ""'''
-         
+        self.add_widget(layout)
+
+    def next_screen(self):
+        self.manager.transition = SlideTransition(direction="right", duration=.2)
+        self.manager.current ="screen1"
+
+
 class Calculator(App):
     def build(self):
             sm = ScreenManager()
-            sm.add_widget(Screen1())
-            #sm.add_widget(Screen2())
-            #sm.add_widget(Screen3())
-            #sm.add_widget(Screen4())
+            sm.add_widget(Screen1(name = "screen1"))
+            sm.add_widget(Screen2(name = "screen2"))
             return sm
+
+
+calculation_history = []
     
 app = Calculator()
 app.run()
