@@ -4,6 +4,9 @@ from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 
+
+#calculation_history = []
+
 class Screen1(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -107,6 +110,7 @@ class Screen1(Screen):
     def equals(self):
         equal = str(eval(self.label.text))
         self.label.text = equal
+        self.calculation_history.append(self.label.text)
         
 class Screen2(Screen):
     def __init__(self, **kwargs):
@@ -114,9 +118,13 @@ class Screen2(Screen):
         self.label = Label(text="History", font_size="40sp")
         button_return = Button(text="Return", font_size="40sp", background_color=(1, 0.5, 1, 0.5), color=(0.5, 1, 1, 0.5), background_normal="", background_down="")
         button_return.on_press = self.next_screen
+        #history1 = Label(text=self.calculation_history, font_size="40sp")
+
         
         
         layout = BoxLayout(orientation="vertical")
+        #rowhis1 = BoxLayout(orientation="horizontal", spacing=10, padding=5)
+        #rowhis1.add_widget()
         row0 = BoxLayout(orientation="horizontal", spacing=10, padding=5) 
         row0.add_widget(button_return)
         layout.add_widget(self.label)
@@ -137,7 +145,7 @@ class Calculator(App):
             return sm
 
 
-calculation_history = []
+
     
 app = Calculator()
 app.run()
